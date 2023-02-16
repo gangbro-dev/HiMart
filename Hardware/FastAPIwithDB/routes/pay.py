@@ -1,4 +1,4 @@
-from asyncio import run
+import asyncio
 from datetime import datetime
 
 import requests
@@ -16,7 +16,7 @@ router = APIRouter(
 
 @router.post("/member")
 def 키오스크_회원_결제요청(request: Request, cardId: CardId):
-    data = run(request.json())
+    data = asyncio.run(request.json())
     cardId = data["cardId"]
     # testdata
     userId = cardInfo["userId"]
@@ -55,7 +55,7 @@ def 키오스크_회원_결제요청(request: Request, cardId: CardId):
     for product in shopping:
         priceSum += product["price"] * product["count"]
     # spring 요청
-    url = BASE_URL + "/api/pay/member"
+    url = BASE_URL + "/api/iot/member"
     payload = {
         "userId" : userId,
         "kioskId" : kioskId,
@@ -72,8 +72,8 @@ def 키오스크_회원_결제요청(request: Request, cardId: CardId):
 
 
 @router.post("/guest")
-def 키오스크_비회원_결제요청(request: Request, cardInfo: GuestCardInfo):
-    kioskId = KIOSK_ID
+def 키오스크_비회원_결제요청(request: Request, card: GuestCardInfo):
+    card = asyncio.run(request.json())
     date = str(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
     shopping = list()
     byingdict = dict()
@@ -94,10 +94,10 @@ def 키오스크_비회원_결제요청(request: Request, cardInfo: GuestCardInf
     for product in shopping:
         priceSum += product["price"] * product["count"]
     # spring 요청
-    url = BASE_URL + "/api/pay/guest"
+    url = BASE_URL + "/api/iot/guest"
     payload = {
-        "kioskId" : kioskId,
-        "cardInfo" : cardInfo,
+        "kioskId" : KIOSK_ID,
+        "cardInfo" : card,
         "date" : date,
         "priceSum" : priceSum,
         "shopping" : shopping
