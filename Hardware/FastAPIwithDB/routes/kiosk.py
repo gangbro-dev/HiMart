@@ -9,6 +9,7 @@ from core.config import BASE_URL, KIOSK_ID
 from crud.crud import select_products_with_rfid
 from db.connection import get_db
 from functions.barcode_test import SessionStorage
+from functions.PR_GPIO import LED_off, LED_on
 from functions.serial_test import RFID_Serial_Trans
 from routes.models import BarcodeList, CardId, CardList, RFIDList
 from routes.websocket import sendMsg
@@ -77,6 +78,7 @@ def reset_info():
 def 키오스크_아이디(request: Request):
     # reset_info()
     # asyncio.run(sessionStore.startThread())
+    LED_off()
     return {"kioskId": KIOSK_ID}
 
 
@@ -118,14 +120,17 @@ def RFID_리딩(request: Request, db: Session = Depends(get_db)):
     # RFID 시작
     rfid_uids = asyncio.run(RFID_Serial_Trans().main())
     # rfid 상품정보를 이용해서 DB 조회
-    products = select_products_with_rfid(rfid_uids, db)
     global productInfo
-    productInfo = products
+    productInfo = select_products_with_rfid(rfid_uids, db)
+    for p in productInfo:
+        if p["isAdult"]:
+            LED_on()
+            break
     asyncio.run(sendMsg(json.dumps({
         "userId": cardInfo["userId"],
         "defaultCardId": cardInfo["defaultCardId"],
         "cardList": cardInfo["cardList"],
-        "itemList": products,
+        "itemList": productInfo,
     })))
 
 
