@@ -69,6 +69,8 @@ def 키오스크_회원_결제요청(request: Request, cardId: CardId):
     if r.status_code == 200:
         reset_info()
         create_shopping(shoppings=shopping, date=date)
+    else:
+        print("결제실패 :" , r.status_code)
 
 
 @router.post("/guest")
@@ -107,3 +109,5 @@ def 키오스크_비회원_결제요청(request: Request, card: GuestCardInfo):
     if r.status_code == 200:
         reset_info()
         create_shopping(shoppings=shopping, date=date)
+    else:
+        print("결제실패 :" , r.status_code)
