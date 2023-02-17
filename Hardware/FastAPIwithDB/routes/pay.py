@@ -64,7 +64,7 @@ def 키오스크_회원_결제요청(request: Request, cardId: CardId):
         "priceSum" : priceSum,
         "shopping" : shopping
     }
-    r = requests.post(url, data=payload)
+    r = requests.post(url, json=payload)
     print(r.status_code)
     if r.status_code == 200:
         reset_info()
