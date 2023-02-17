@@ -64,7 +64,7 @@ def 키오스크_회원_결제요청(request: Request, cardId: CardId):
         "priceSum" : priceSum,
         "shopping" : shopping
     }
-    r = asyncio.run(requests.post(url=url, json=payload))
+    r = requests.post(url=url, json=payload)
     print(r.status_code)
     if r.status_code == 200:
         reset_info()
@@ -104,7 +104,7 @@ def 키오스크_비회원_결제요청(request: Request, card: GuestCardInfo):
         "priceSum" : priceSum,
         "shopping" : shopping
     }
-    r = asyncio.run(requests.post(url=url, json=payload))
+    r = requests.post(url=url, data=payload)
     print(r.status_code)
     if r.status_code == 200:
         reset_info()
